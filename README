@@ -1,0 +1,5 @@
+CELERY RUN:
+celery -A BuyingModule.celery_task worker --loglevel=info
+celery -A BuyingModule.celery_task beat --loglevel=info
+
+docker-compose up --build -d

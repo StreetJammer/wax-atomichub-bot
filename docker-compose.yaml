@@ -1,0 +1,46 @@
+version: '3.7'
+services:
+  chrome:
+      image: selenium/standalone-chrome:latest
+      hostname: chrome
+      privileged: true
+      shm_size: 2g
+
+  framework:
+      build: .
+      depends_on:
+          - chrome
+
+  celery-worker:
+    build: .
+    container_name: celery-worker
+    command: celery -A BuyingModule.celery_task worker --loglevel=info
+    depends_on:
+      - rabbit
+# bash -c "celery -A BuyingModule.celery_task beat --detach && celery -A BuyingModule.celery_task worker"
+  celery-beat:
+    build: .
+    container_name: celery-beat
+    command: celery -A BuyingModule.celery_task beat --loglevel=info
+    depends_on:
+      - celery-worker
+      - rabbit
+
+  rabbit:
+    image: rabbitmq:latest
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+    command: rabbitmq-server
+
+  flask-bot:
+    container_name: flask-bot
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: python UI_Module/app.py
+    restart: always
+    ports:
+      - 5002:5000
+    depends_on:
+      - celery-worker
