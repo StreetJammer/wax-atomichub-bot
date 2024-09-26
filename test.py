@@ -28,3 +28,18 @@ broker = os.getenv('BROKER')
 
 # receiver = Receiver()
 # receiver.receive_data([{"login": "mykola.kurenkov@data-ox.com", "password": "TestTest123$"}], [1,], buy_nft)
+
+import pytest
+
+@pytest.fixture
+def setup():
+    # Setup code if necessary
+    pass
+
+def test_buy_transaction():
+    # Implement test for WaxBloksIoTransactions.buy
+    assert True  # Replace with actual assertions
+
+def test_deposit_transaction():
+    # Implement test for WaxBloksIoTransactions.deposit
+    assert True  # Replace with actual assertions

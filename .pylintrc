@@ -1,0 +1,6 @@
+[MASTER]
+ignore=venv
+max-line-length=100
+
+[MESSAGES CONTROL]
+disable=C0114,C0115,C0116  # Disable missing module, class, function docstrings
