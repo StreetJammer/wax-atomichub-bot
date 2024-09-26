@@ -1,6 +1,5 @@
 import os
-import time
-from datetime import datetime, timedelta
+from datetime import datetime
 
 import pytz
 from celery import Celery
@@ -9,12 +8,11 @@ from dotenv import load_dotenv
 
 from DaoModule.Dao import Dao
 from EmailModule.sender import EmailSender
-from TimeModule.TimeModule import TimeModule
 from TokenManagementModule.Receiver import Receiver
 from main import buy_check
 
 load_dotenv()
-broker = os.getenv('BROKER')
+broker = os.getenv('BROKER_URL')
 
 app = Celery(
     'simple_worker',
@@ -28,9 +26,9 @@ def check_nft_data():
     token_ids = Dao.get_drop_ids()
     for token in token_ids:
         scrap_token.apply_async(eta=datetime.now(pytz.utc),
-                            kwargs={
-                                "token": token,
-                            })
+                                kwargs={
+                                    "token": token,
+                                })
     return True
 
 
@@ -50,7 +48,7 @@ def scrap_token(**kwargs):
         token = kwargs['token']
         receiver = Receiver()
         receiver.scrape_token_info(token)
-    except Exception as err:
+    except SpecificException as err:  # Replace SpecificException with the appropriate exception
         EmailSender(err, 'Error', 'mykola.kurenkov@data-ox.com')
 
 
@@ -72,7 +70,7 @@ def buy_nft(**kwargs):
             referer='atomichub',
             country='US',
             delphi_median=0,
-            buying_time=token['start_time'], #or TimeModule.return_current_unix_time(),  #TimeModule.return_current_unix_time() + 50000,
+            buying_time=token['start_time'],
             currency=token['currency']
         )
         print(response_status)
@@ -85,13 +83,21 @@ def buy_nft(**kwargs):
             Dao.update_task(task_id, datetime.now().strftime('%Y-%m-%d %H:%M:%S'), 'Error', response_message)
         else:
             Dao.update_task(task_id, datetime.now().strftime('%Y-%m-%d %H:%M:%S'), 'Success', "")
-    except Exception as err:
+    except SpecificException as err:  # Replace SpecificException with the appropriate exception
         EmailSender(err, 'Error', 'mykola.kurenkov@data-ox.com')
 
 
 @app.task
 def receive_task(**kwargs):
     try:
+        login = kwargs['login']
+        password = kwargs['password']
+        drops = kwargs['drops']
+        to_name = kwargs['to_name']
+        receiver = Receiver()
+        receiver.receive_data([{"login": login, "password": password}], drops, buy_nft, to_name)
+    except SpecificException as err:  # Replace SpecificException with the appropriate exception
+        print(err)
         login = kwargs['login']
         password = kwargs['password']
         drops = kwargs['drops']

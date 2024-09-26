@@ -21,7 +21,7 @@ class TimeModule:
         return date_time
 
     @staticmethod
-    def return_current_unix_time():
+    def get_current_unix_time():
         response = requests.get(url)
         str_response = str(response.content)
         unix_time = re.search(r'\d+', str_response).group()

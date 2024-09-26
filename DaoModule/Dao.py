@@ -12,14 +12,14 @@ class Dao:
 
     @staticmethod
     def get_median():
-        response = requests.get(flask_url+"median/")
+        response = requests.get(flask_url+"median/", timeout=10)
         response_json = response.json()
         median = response_json['result'][0]['price']
         return median
 
     @staticmethod
     def get_tokens():
-        response = requests.get(flask_url + "tokens/")
+        response = requests.get(flask_url + "tokens/", timeout=10)
         response_json = response.json()
         return response_json['result']
 
@@ -28,7 +28,7 @@ class Dao:
         r = requests.post(flask_url + 'add-account/', json={
             "login": login,
             "password": password,
-        })
+        }, timeout=10)
         return r.json()['account']
 
     @staticmethod
@@ -40,7 +40,7 @@ class Dao:
             "perform_time": perform_time,
             "status": status,
             "error": error,
-        })
+        }, timeout=10)
         return r.json()['task']
 
     @staticmethod
@@ -50,6 +50,7 @@ class Dao:
             "perform_time": perform_time,
             "status": status,
             "error": error,
+        }, timeout=10)
         })
         return r.json()["success"]
 

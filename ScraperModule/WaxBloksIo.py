@@ -113,7 +113,7 @@ class WaxBloksIo:
         field.send_keys(Keys.CONTROL + "a")
         field.send_keys(Keys.DELETE)
         return self.driver
-    
+
     def buy_drop(self, to_name, claimer_name, drop_id, claim_amount, delphi_median, referer, country, buying_time, currency):
         self.search_drop(to_name)
         self.click_contract_tab()
@@ -209,7 +209,7 @@ class WaxBloksIo:
         df = pd.read_html(html_table.get_attribute('outerHTML'))[0]
         # print(df.head())
         return df
-    
+
     def get_listing_price(self, nft_id, to_name):
         self.search_drop(to_name)
         self.find_contract_drop(nft_id=nft_id)

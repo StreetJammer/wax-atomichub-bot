@@ -1,6 +1,3 @@
-from ScraperModule.SeleniumService.selenium_executor import SeleniumExecutor
-from ScraperModule.WaxBloksIo import WaxBloksIo
-from ScraperModule.WaxCloud import login_wax_cloud
 from TimeModule.TimeModule import TimeModule
 
 
