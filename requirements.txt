@@ -63,3 +63,8 @@ websockets==9.1
 Werkzeug==2.0.2
 wsproto==1.0.0
 zipp==3.6.0
+
+pylint==2.15.10
+flake8==4.0.1
+mypy==0.961
+pytest==7.2.0
